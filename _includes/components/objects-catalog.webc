@@ -1,8 +1,24 @@
 <script webc:setup>
-console.warn('SETUP', this);
-</script>
+const allObjects = this.objects.object_list;
 
-<style webc:keep>
+const { filePathStem } = this.page;
+const currentDir = filePathStem.split('/').slice(0, -1).join('/');
+
+const objects = this.collections.navigation.reduce(
+  (objects, { data }) => {
+    const { page, pageObjects } = data;
+    const pageDir = page.filePathStem.split('/').slice(0, -1).join('/');
+    if (pageObjects && currentDir === pageDir) {
+      objects = objects.concat(pageObjects.map((object) => ({ ...object, page })));
+    }
+    return objects;
+  },
+  []
+);
+console.warn('OBJECTS', objects);
+</script>
+<!-- <style webc:keep type="text/css"> -->
+<style>
 .object-filters {
   --max-height: 25vh;
   padding: 0 28.5px;
@@ -282,7 +298,6 @@ console.warn('SETUP', this);
   overflow-y: scroll;
 }
 </style>
-
 <section class="object-filters">
   <input class="collapsible__checkbox" type="checkbox" id="collapsible-checkbox" />
   <label for="collapsible-checkbox" class="collapsible__toggle"></label>

@@ -103,9 +103,7 @@ module.exports = {
           return validObjects
         }
 
-        if (!objectData.figure) {
-          warn(`pageObjects: object id ${objectData.id} has no figure data`)
-        } else {
+        if (objectData.figure) {
           objectData.figures = objectData.figure.map((figure) => {
             if (figure.id) {
               return this.getFigure(figure.id)

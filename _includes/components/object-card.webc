@@ -1,48 +1,50 @@
-<script webc:type="js">
-// TODO: get `ignoredAttributes` from `objects-catalog.webc`
-const ignoredAttributes = ['name', 'thumbnail', 'title'];
-const renderFields = () => {
-  return Object
-    .entries(this.webc.attributes)
-    .reduce((fields, [key, value]) => {
-      /**
-       * Only render fields for keys:
-       * - are not ignored attributes
-       * - are not objects
-       */
-      if (
-        !ignoredAttributes.includes(key) &&
-        value !== '[object Object]'
-      ) {
-        fields += `<span class="object-card__field"><span class="object-card__field-value">${value.split(',').join(', ')}</span></span>`;
-      }
-      return fields;
-    }, '');
-};
-`
-<a class="object-card" href="${url}">
-  <!-- TODO: make image and card name siblings of fields to allwo for reordering with CSS -->
-  <figure class="object-card__image">
-    <img src="${imagePath}" alt="${objectName}">
-  </figure>
-
-  <div class="object-card__content">
-    <span class=object-card__title>
-      ${objectNameHtml}
-      <span class="arrow" data-outputs-exclude="epub,pdf">
-        <svg data-outputs-exclude="epub,pdf">
-          <switch>
-            <use xlink:href="#arrow-forward-icon"></use>
-          </switch>
-        </svg>
-      </span>
-    </span>
-    <!-- TODO: style fields as inline-flex -->
-    <!-- ${renderFields()} -->
-  </div>
+<a class="object-card" href="this.webc.attributes.url">
+  <div class="object-card__content" @html="renderFields(this.webc.attributes)"></div>
 </a>
-`;
+
+<script webc:setup>
+const renderFields = (webcAttributes) => {
+  const ignoredAttributes = ['imagePath', 'uid', 'url'];
+  const isIgnoredAttribute = (key) => !ignoredAttributes.includes(key);
+  const attributeOrder = this.$data.objects.object_card || Object.keys(webcAttributes).filter(isIgnoredAttribute);
+  const attributes = attributeOrder.map((key) => ({ name: key, value: webcAttributes[key]}));
+  const firstTextAttribute = attributes.find(({ name }) => name !== 'thumbnail');
+  const alt = webcAttributes.alt || '';
+  const { imagePath } = webcAttributes;
+
+  return attributes.map(({ name, value }) => {
+    switch (true) {
+      /**
+       * Render a thumbnail image for the `thumbnail` attribute
+       */
+      case name === 'thumbnail':
+        return `<figure class="object-card__image"><img src="${imagePath}" alt="${alt}"></figure>`
+      /**
+       * Render different markup for the first text attribute
+       */
+      case name === firstTextAttribute.name:
+        return `
+          <span class=object-card__title>
+            ${value}
+            <span class="arrow" data-outputs-exclude="epub,pdf">
+              <svg data-outputs-exclude="epub,pdf">
+                <switch>
+                  <use xlink:href="#arrow-forward-icon"></use>
+                </switch>
+              </svg>
+            </span>
+          </span>`;
+      /**
+       * Render default markup for an attribute
+       */
+      default:
+        return `<span class="object-card__field">${value}</span>`;
+    }
+    return fields;
+  }).join('');
+};
 </script>
+
 <style>
 .object-card {
   display: block;
@@ -54,10 +56,6 @@ const renderFields = () => {
 
 .object-card:hover {
   color: #a02a2a;
-}
-
-.object-card__image {
-  padding: 1.5em 1.5em 0em 1.5em;
 }
 
 .object-card__image img {
@@ -76,6 +74,8 @@ const renderFields = () => {
 }
 
 .object-card__content {
+  display: flex;
+  flex-direction: column;
   padding: 1.5em;
 }
 
@@ -85,6 +85,11 @@ const renderFields = () => {
   line-height: 1.22em;
   font-family: "IBM Plex Sans Condensed", sans-serif;
   font-weight: 700;
+}
+
+.object-card__title:not(:last-child),
+.object-card__image:not(:last-child) {
+  margin-bottom: 1em;
 }
 
 .object-card .arrow {
@@ -105,4 +110,7 @@ const renderFields = () => {
   height: 18px;
 }
 
+.object-card__field {
+  color: rgb(51, 51, 51);
+}
 </style>

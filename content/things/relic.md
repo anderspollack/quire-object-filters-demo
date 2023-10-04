@@ -5,8 +5,11 @@ layout: page
 order: 140
 tags: thing
 object:
-  - name: "Relic"
+  - letter: "R"
+    name: "Relic"
     thumbnail: "figures/things/relic.jpg"
+    artist: Hyacinthe Rigaud
+    time_span: 1659–1743
     owner:
       - first_name: Hyacinthe
         last_name: Rigaud

@@ -5,8 +5,11 @@ layout: page
 order: 144
 tags: thing
 object:
-  - name: "Snuffbox"
+  - letter: "S"
+    name: "Snuffbox"
     thumbnail: "figures/things/snuffbox.jpg"
+    artist: Jean-Baptiste Oudry
+    time_span: 1686–1755
     owner:
       - first_name: Jean-Baptiste
         last_name: Oudry

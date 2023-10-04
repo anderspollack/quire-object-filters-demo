@@ -5,8 +5,11 @@ layout: page
 order: 126
 tags: thing
 object:
-  - name: "Lantern"
+  - letter: "L"
+    name: "Lantern"
     thumbnail: "figures/things/lantern.jpg"
+    artist: Jean-Siméon Chardin
+    time_span: 1699–1779
     owner:
       - first_name: Jean-Siméon
         last_name: Chardin
